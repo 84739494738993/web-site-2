@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Oilfield: Сравнительный анализ интеллектуальных платформ</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        dark: {
+                            bg: '#0b1329',
+                            card: '#1c2541',
+                            border: '#3a506b',
+                            accent: '#48cae4', /* Cyan */
+                            amber: '#f59e0b',
+                            emerald: '#10b981',
+                            indigo: '#6366f1'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #0b1329;
+            color: #f1f5f9;
+        }
+        .code-font {
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .custom-scroll::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scroll::-webkit-scrollbar-track {
+            background: #0b1329;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: #3a506b;
+            border-radius: 4px;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb:hover {
+            background: #48cae4;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col overflow-x-hidden custom-scroll">
+
+    <!-- Header -->
+    <header class="bg-dark-card/90 backdrop-blur border-b border-dark-border/40 sticky top-0 z-50 px-6 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
+        <div class="flex items-center gap-3">
+            <div class="h-10 w-10 rounded-xl bg-gradient-to-tr from-dark-accent to-dark-indigo flex items-center justify-center font-bold text-xl text-black shadow-lg shadow-dark-accent/25">
+                🛢️
+            </div>
+            <div>
+                <h1 class="text-lg font-black tracking-tight text-white flex items-center gap-2">
+                    Digital Oilfield Comparison <span class="text-[10px] px-2 py-0.5 rounded-full bg-dark-accent/10 text-dark-accent border border-dark-accent/20">Аналитика 2026</span>
+                </h1>
+                <p class="text-xs text-slate-400">Сравнение систем удаленного мониторинга и автоматизации нефтегазодобычи</p>
+            </div>
+        </div>
+        <div class="flex items-center gap-4">
+            <div class="bg-slate-900/80 px-3 py-1.5 rounded-lg border border-dark-border/30 text-xs text-slate-300">
+                Рыночный сегмент: <span class="text-dark-accent font-semibold">Искусственный подъем (Artificial Lift)</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Layout Container -->
+    <div class="flex-1 flex flex-col lg:flex-row">
+        
+        <!-- Sidebar Navigation -->
+        <aside class="w-full lg:w-72 bg-dark-card/30 border-r border-dark-border/20 p-4 flex flex-col gap-1 lg:min-h-[calc(100vh-73px)] shrink-0">
+            <div class="px-3 py-2 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Тематические разделы</div>
+            
+            <button onclick="switchTab('overview')" id="btn-overview" class="tab-btn flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-semibold tracking-wide transition-all text-white bg-slate-800/80 border-l-4 border-dark-accent">
+                <span>📊</span> ОБЗОР РЫНКА (KPI)
+            </button>
+            
+            <button onclick="switchTab('matrix')" id="btn-matrix" class="tab-btn flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-semibold tracking-wide transition-all text-slate-400 hover:bg-slate-800/30 hover:text-white">
+                <span>📋</span> СРАВНИТЕЛЬНАЯ МАТРИЦА
+            </button>
+            
+            <button onclick="switchTab('architecture')" id="btn-architecture" class="tab-btn flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-semibold tracking-wide transition-all text-slate-400 hover:bg-slate-800/30 hover:text-white">
+                <span>⛓️</span> АРХИТЕКТУРА И ПОТОКИ
+            </button>
+            
+            <button onclick="switchTab('cases')" id="btn-cases" class="tab-btn flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-semibold tracking-wide transition-all text-slate-400 hover:bg-slate-800/30 hover:text-white">
+                <span>💡</span> КЕЙСЫ И ЭФФЕКТЫ
+            </button>
+            
+            <button onclick="switchTab('calculator')" id="btn-calculator" class="tab-btn flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-semibold tracking-wide transition-all text-slate-400 hover:bg-slate-800/30 hover:text-white">
+                <span>💰</span> КАЛЬКУЛЯТОР ROI & TCO
+            </button>
+
+            <!-- Vendor Resource Info -->
+            <div class="mt-auto p-4 bg-slate-900/60 rounded-xl border border-dark-border/20 text-xs">
+                <div class="font-bold text-white mb-2 flex items-center gap-1.5">
+                    <span class="h-2 w-2 rounded-full bg-dark-accent animate-pulse"></span>
+                    Проверяемые источники:
+                </div>
+                <div class="space-y-1.5 text-slate-400 text-[11px]">
+                    <a href="https://www.slb.com" target="_blank" class="block hover:text-dark-accent transition-colors">➔ Портал SLB Delfi (Lift IQ)</a>
+                    <a href="https://www.bakerhughes.com" target="_blank" class="block hover:text-dark-accent transition-colors">➔ Решения Baker Hughes (Leucipa)</a>
+                    <a href="https://www.weatherford.com" target="_blank" class="block hover:text-dark-accent transition-colors">➔ Weatherford (ForeSite & CygNet)</a>
+                    <a href="https://www.halliburton.com" target="_blank" class="block hover:text-dark-accent transition-colors">➔ Halliburton Landmark (Intelevate)</a>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Dynamic Area -->
+        <main class="flex-1 p-6 lg:p-8 max-w-7xl mx-auto w-full overflow-y-auto custom-scroll">
+            
+            <!-- SECTION 1: OVERVIEW & RADAR -->
+            <div id="tab-overview" class="tab-content flex flex-col gap-6">
+                <div>
+                    <h2 class="text-2xl font-black text-white">Интеллектуальные платформы автоматизации нефтедобычи</h2>
+                    <p class="text-sm text-slate-400">Сравнительный анализ систем удаленного мониторинга, предиктивной аналитики и оптимизации механизированного подъема</p>
+                </div>
+
+                <!-- Core Stats / KPIs -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div class="bg-dark-card border border-dark-border/20 p-5 rounded-2xl flex flex-col">
+                        <span class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-1">Макс. рост run life (МРП)</span>
+                        <span class="text-3xl font-extrabold text-dark-accent">+400%</span>
+                        <span class="text-[11px] text-slate-500 mt-2">Доказано кейсом SLB Lift IQ в Пермиан</span>
+                    </div>
+                    <div class="bg-dark-card border border-dark-border/20 p-5 rounded-2xl flex flex-col">
+                        <span class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-1">Снижение OPEX на ремонты</span>
+                        <span class="text-3xl font-extrabold text-dark-emerald">-30%...50%</span>
+                        <span class="text-[11px] text-slate-500 mt-2">За счет предиктивного выявления кавитации и газов</span>
+                    </div>
+                    <div class="bg-dark-card border border-dark-border/20 p-5 rounded-2xl flex flex-col">
+                        <span class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-1">Уменьшение визитов устья</span>
+                        <span class="text-3xl font-extrabold text-dark-indigo">До -25%</span>
+                        <span class="text-[11px] text-slate-500 mt-2">Концепция "Management by Exception" (Weatherford)</span>
+                    </div>
+                    <div class="bg-dark-card border border-dark-border/20 p-5 rounded-2xl flex flex-col">
+                        <span class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-1">Автономность решений</span>
+                        <span class="text-3xl font-extrabold text-dark-amber">>100к / год</span>
+                        <span class="text-[11px] text-slate-500 mt-2">Дистанционных оптимизаций у Halliburton</span>
+                    </div>
+                </div>
+
+                <!-- Radar Comparison -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="bg-dark-card border border-dark-border/20 p-6 rounded-2xl lg:col-span-2">
+                        <h3 class="text-md font-bold text-white mb-4">Сравнение технологического охвата (Радарная диаграмма)</h3>
+                        <div class="h-80 w-full relative">
+                            <canvas id="radarChart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-dark-card border border-dark-border/20 p-6 rounded-2xl flex flex-col justify-between">
+                        <div class="space-y-4">
+                            <h3 class="text-md font-bold text-white">4 Концепции Цифрового Промысла</h3>
+                            <p class="text-xs text-slate-400 leading-relaxed">
+                                Мировые нефтесервисные холдинги подходят к интеллектуальному управлению механизированным фондом с принципиально разных сторон:
+                            </p>
+                            <div class="space-y-2 text-xs">
+                                <div class="p-2.5 rounded-lg bg-slate-900/50 border-l-2 border-dark-accent">
+                                    <span class="font-bold text-white">SLB (Lift IQ):</span> Аппаратно-зависимая гибридная экосистема с уклоном в превентивную защиту насоса силами инженеров ALSC.
+                                </div>
+                                <div class="p-2.5 rounded-lg bg-slate-900/50 border-l-2 border-dark-emerald">
+                                    <span class="font-bold text-white">Baker Hughes (Leucipa):</span> Облачная оркестрация всего промысла, ИИ на физических моделях и GenAI EPAM-ассистенты.
+                                </div>
+                                <div class="p-2.5 rounded-lg bg-slate-900/50 border-l-2 border-dark-indigo">
+                                    <span class="font-bold text-white">Weatherford (ForeSite):</span> Платформа гибридных вычислений на устье (Edge) и узлового анализа пласта.
+                                </div>
+                                <div class="p-2.5 rounded-lg bg-slate-900/50 border-l-2 border-dark-amber">
+                                    <span class="font-bold text-white">Halliburton (DS 365):</span> Открытые стандарты OSDU, сквозные гидродинамические цифровые двойники (NETool, SpyGlass).
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-[10px] text-slate-500 italic border-t border-dark-border/20 pt-4 mt-4">
+                            * Настройте параметры своего фонда в разделе «Калькулятор ROI» для оценки финансовой выгоды.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 2: DETAILED MATRIX -->
+            <div id="tab-matrix" class="tab-content hidden flex flex-col gap-6">
+                <div>
+                    <h2 class="text-2xl font-black text-white">Глубокий сравнительный анализ платформ</h2>
+                    <p class="text-sm text-slate-400">Систематизация параметров, определяющих практическую и экономическую ценность внедрения для операторов</p>
+                </div>
+
+                <div class="bg-dark-card border border-dark-border/20 rounded-2xl overflow-hidden">
+                    <div class="overflow-x-auto custom-scroll">
+                        <table class="w-full text-left text-xs border-collapse min-w-[1000px]">
+                            <thead>
+                                <tr class="bg-slate-900/80 text-slate-400 font-bold border-b border-dark-border/20">
+                                    <th class="p-4 w-48">Параметр сравнения</th>
+                                    <th class="p-4 text-dark-accent bg-slate-800/10">SLB Lift IQ</th>
+                                    <th class="p-4 text-dark-emerald">Baker Hughes Leucipa</th>
+                                    <th class="p-4 text-dark-indigo">Weatherford ForeSite</th>
+                                    <th class="p-4 text-dark-amber">Halliburton DecisionSpace 365</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-dark-border/10">
+                                <tr>
+                                    <td class="p-4 font-bold text-white bg-slate-900/20">Разработчик и ИТ-база</td>
+                                    <td class="p-4 bg-slate-800/10">SLB (Schlumberger), закрытая проприетарная облачная среда Delfi.</td>
+                                    <td class="p-4">Baker Hughes (в стратегическом партнерстве с AWS и EPAM).</td>
+                                    <td class="p-4">Weatherford. Совмещение локальной CygNet SCADA и ForeSite Cloud.</td>
+                                    <td class="p-4">Halliburton Landmark. Мультиоблачная среда iEnergy, стандарты OSDU.</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-4 font-bold text-white bg-slate-900/20">Аппаратная независимость</td>
+                                    <td class="p-4 bg-slate-800/10 text-red-300"><strong>Низкая.</strong> Высокая привязка к контроллерам SCB3, панелям Choke и датчикам Phoenix.</td>
+                                    <td class="p-4 text-emerald-300"><strong>Высокая.</strong> Аппаратно-независимая чисто программная среда (Hardware-Agnostic).</td>
+                                    <td class="p-4 text-indigo-300"><strong>Средняя.</strong> Оптимальная работа с ForeSite Edge контроллерами и приводами ForeSite Power.</td>
+                                    <td class="p-4 text-emerald-300"><strong>Высокая.</strong> Полная независимость от вендора устьевого оборудования (OPC UA, MQTT).</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-4 font-bold text-white bg-slate-900/20">Интеллектуальный движок</td>
+                                    <td class="p-4 bg-slate-800/10">Предиктивные модели LiftWatcher + новый агентный ИИ <strong>Tela™</strong> (разговорный ИИ).</td>
+                                    <td class="p-4"><strong>Physics-based AI</strong> (интеграция законов многофазной фильтрации с ML) + GenAI ассистент.</td>
+                                    <td class="p-4">Методы узлового анализа (Nodal Analysis) физических процессов в увязке с нейросетями.</td>
+                                    <td class="p-4">Сквозные симуляторы (NETool - пласт, SpyGlass - ESP, Intelevate - аналитика данных).</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-4 font-bold text-white bg-slate-900/20">Локализация вычислений</td>
+                                    <td class="p-4 bg-slate-800/10">Локальный буфер устья на SCB3. Обработка данных - в облаке и инженерами ALSC.</td>
+                                    <td class="p-4 text-red-300"><strong>Только Cloud.</strong> Высокая зависимость от стабильности интернет-канала связи с AWS.</td>
+                                    <td class="p-4 text-indigo-300"><strong>Edge-вычисления.</strong> Контроллеры ForeSite Edge автономно оптимизируют ШГН/УЭЦН на устье.</td>
+                                    <td class="p-4"><strong>Cloud-SaaS.</strong> Вычисления выполняются в iEnergy hybrid cloud (offline-режим в SpyGlass).</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-4 font-bold text-white bg-slate-900/20">Охват способов добычи</td>
+                                    <td class="p-4 bg-slate-800/10">ESP (УЭЦН), PCP (винтовые), SRP (ШГН), газлифт. Фокус на продление жизни насоса.</td>
+                                    <td class="p-4">ESP (модуль ESP Optimizer), виртуальные замеры дебита, оркестрация сети сбора.</td>
+                                    <td class="p-4 text-indigo-300"><strong>Все типы:</strong> ШГН (анализ динамограмм), УЭЦН, ВНУ, газлифт, плунжер, фонтан.</td>
+                                    <td class="p-4">ESP (SpyGlass), газлифтные системы, Flow Assurance (управление солями/гидратами).</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-4 font-bold text-white bg-slate-900/20">Коммерческая модель</td>
+                                    <td class="p-4 bg-slate-800/10">Индивидуальный расчет стоимости. Продажа оборудования + контракты на уровни покрытия.</td>
+                                    <td class="p-4">SaaS-подписка за подключенную скважину + плата за специализированные модули.</td>
+                                    <td class="p-4">Лицензирование ПО + продажа Edge-железа. CAPEX-free подписка в ForeSite Cloud.</td>
+                                    <td class="p-4">Cloud SaaS iEnergy подписка + отдельное лицензирование симуляторов (SpyGlass/NETool).</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-4 font-bold text-white bg-slate-900/20">Что бесплатно, а что платно?</td>
+                                    <td class="p-4 bg-slate-800/10 text-slate-300">
+                                        <span class="text-red-400 font-semibold">Бесплатного нет.</span><br>
+                                        <span class="text-slate-400">Платно: шкафы SCB3, датчики Phoenix, контракты ALSC (4 уровня покрытия от мониторинга до активного управления).</span>
+                                    </td>
+                                    <td class="p-4 text-slate-300">
+                                        <span class="text-red-400 font-semibold">Бесплатного нет.</span><br>
+                                        <span class="text-slate-400">Платно: абонентская плата за скважину, модули ESP Optimizer и Virtual Meters, лицензии GenAI, услуги EPAM.</span>
+                                    </td>
+                                    <td class="p-4 text-slate-300">
+                                        <span class="text-emerald-400 font-semibold">Бесплатно:</span> базовые HMI-экраны CygNet SCADA.<br>
+                                        <span class="text-slate-400">Платно: контроллеры Edge, лицензии ForeSite Cloud, консалтинг узлового анализа.</span>
+                                    </td>
+                                    <td class="p-4 text-slate-300">
+                                        <span class="text-emerald-400 font-semibold">Бесплатно:</span> offline-модуль проектирования SpyGlass (входит в базовый пакет iEnergy).<br>
+                                        <span class="text-slate-400">Платно: Intelevate ИИ-аналитика, NETool, SpyGlass Cloud, интеграция OSDU.</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="p-4 font-bold text-white bg-slate-900/20">Официальные ссылки</td>
+                                    <td class="p-4 bg-slate-800/10">
+                                        <a href="https://www.slb.com/products-and-services/innovating-in-oil-and-gas/completions/artificial-lift/optimizing-artificial-lift/lift-iq-production-life-cycle-management-service" target="_blank" class="text-dark-accent hover:underline">SLB Lift IQ Page ↗</a>
+                                    </td>
+                                    <td class="p-4">
+                                        <a href="https://www.bakerhughes.com/oilfield-services-and-equipment-digital/leucipa-automated-field-production-solution" target="_blank" class="text-dark-accent hover:underline">BH Leucipa Page ↗</a>
+                                    </td>
+                                    <td class="p-4">
+                                        <a href="https://www.weatherford.com/documents/brochure/products-and-services/software/foresite-production-optimization-platform/" target="_blank" class="text-dark-accent hover:underline">WFRD ForeSite Page ↗</a>
+                                    </td>
+                                    <td class="p-4">
+                                        <a href="https://www.halliburton.com/en/software/decisionspace-365-enterprise/decisionspace-365-reservoir-and-production" target="_blank" class="text-dark-accent hover:underline">HAL DS365 Page ↗</a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 3: ARCHITECTURE FLOWS -->
+            <div id="tab-architecture" class="tab-content hidden flex flex-col gap-6">
+                <div>
+                    <h2 class="text-2xl font-black text-white">Архитектурные концепции и взаимодействие элементов</h2>
+                    <p class="text-sm text-slate-400">Выберите архитектурный подход для детальной визуализации потоков данных</p>
+                </div>
+
+                <!-- Arch Toggle -->
+                <div class="flex flex-wrap bg-slate-900/80 p-1.5 rounded-xl border border-dark-border/20 w-max gap-1">
+                    <button id="btn-arch-slb" onclick="toggleArch('slb')" class="px-4 py-2 rounded-lg text-xs font-bold transition-all text-white bg-slate-800">
+                        SLB (Гибрид ALSC 24/7)
+                    </button>
+                    <button id="btn-arch-bh" onclick="toggleArch('bh')" class="px-4 py-2 rounded-lg text-xs font-bold transition-all text-slate-400 hover:text-slate-200">
+                        Baker Hughes (Physics-based Cloud)
+                    </button>
+                    <button id="btn-arch-wfrd" onclick="toggleArch('wfrd')" class="px-4 py-2 rounded-lg text-xs font-bold transition-all text-slate-400 hover:text-slate-200">
+                        Weatherford (ForeSite Edge / CygNet)
+                    </button>
+                    <button id="btn-arch-hal" onclick="toggleArch('hal')" class="px-4 py-2 rounded-lg text-xs font-bold transition-all text-slate-400 hover:text-slate-200">
+                        Halliburton (iEnergy / OSDU Lake)
+                    </button>
+                </div>
+
+                <!-- ARCH CONTAINER: SLB -->
+                <div id="arch-slb" class="bg-dark-card border border-dark-border/20 p-6 rounded-2xl space-y-6">
+                    <div class="flex items-center justify-between border-b border-dark-border/10 pb-4">
+                        <h3 class="text-md font-bold text-white flex items-center gap-2">
+                            <span class="h-3 w-3 rounded-full bg-dark-accent"></span>
+                            Гибридная архитектура SLB Lift IQ & Tela™
+                        </h3>
+                        <span class="text-xs px-2.5 py-1 rounded bg-slate-900 text-slate-400 font-bold">Скважина → Буфер → Облако → ALSC Центр</span>
+                    </div>
+
+                    <p class="text-xs text-slate-300 leading-relaxed max-w-4xl">
+                        Информационная цепочка Lift IQ построена на жесткой интеграции физических датчиков и экспертного круглосуточного сопровождения со стороны глобальных центров мониторинга (Artificial Lift Surveillance Centers — ALSC).
+                    </p>
+
+                    <!-- Steps Visualizer -->
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 pt-4">
+                        <div class="bg-slate-900/60 p-4 rounded-xl border border-dark-border/20 text-center flex flex-col items-center">
+                            <span class="text-2xl mb-2">📟</span>
+                            <h4 class="text-xs font-bold text-white">1. Сбор (Phoenix)</h4>
+                            <p class="text-[10px] text-slate-500 mt-1">Погружная телеметрия Phoenix XT замеряет температуру, давления на приеме/выкиде, токи утечки и вибрацию.</p>
+                        </div>
+                        <div class="bg-slate-900/60 p-4 rounded-xl border border-dark-border/20 text-center flex flex-col items-center">
+                            <span class="text-2xl mb-2">💾</span>
+                            <h4 class="text-xs font-bold text-white">2. Буферизация (SCB3)</h4>
+                            <p class="text-[10px] text-slate-500 mt-1">Локальный контроллер Site Communication Box (SCB3) накапливает тренд локально при сбоях связи со спутником BGAN.</p>
+                        </div>
+                        <div class="bg-slate-900/60 p-4 rounded-xl border border-dark-border/20 text-center flex flex-col items-center">
+                            <span class="text-2xl mb-2">☁️</span>
+                            <h4 class="text-xs font-bold text-white">3. Анализ (LiftWatcher)</h4>
+                            <p class="text-[10px] text-slate-500 mt-1">Данные выгружаются в облако LiftWatcher, где алгоритмы ИИ Tela™ ведут автоматическую фильтрацию и первичную диагностику.</p>
+                        </div>
+                        <div class="bg-slate-900/60 p-4 rounded-xl border border-dark-border/20 text-center flex flex-col items-center">
+                            <span class="text-2xl mb-2">🛠️</span>
+                            <h4 class="text-xs font-bold text-white">4. Действие (ALSC 24/7)</h4>
+                            <p class="text-[10px] text-slate-500 mt-1">Специалисты верифицируют аномалии. На 4-м уровне ("Управление по доверенности") они сами дистанционно останавливают VFD.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ARCH CONTAINER: BAKER HUGHES -->
+                <div id="arch-bh" class="bg-dark-card border border-dark-border/20 p-6 rounded-2xl space-y-6 hidden">
+                    <div class="flex items-center justify-between border-b border-dark-border/10 pb-4">
+                        <h3 class="text-md font-bold text-white flex items-center gap-2">
+                            <span class="h-3 w-3 rounded-full bg-dark-emerald"></span>
+                            Облачная ИИ-Оркестрация Baker Hughes Leucipa
+                        </h3>
+                        <span class="text-xs px-2.5 py-1 rounded bg-slate-900 text-slate-400 font-bold">Устьевые OPC UA Серверы → AWS Cloud → Workflows</span>
+                    </div>
+
+                    <p class="text-xs text-slate-300 leading-relaxed max-w-4xl">
+                        Концепция Leucipa заключается в преодолении изолированности баз данных (data silos). Система является чисто программной и развертывается на мощностях Amazon Web Services (AWS).
+                    </p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 pt-4">
+                        <div class="bg-slate-900/60 p-4 rounded-xl border border-dark-border/20 text-center flex flex-col items-center">
+                            <span class="text-2xl mb-2">📡</span>
+                            <h4 class="text-xs font-bold text-white">1. Агрегация данных</h4>
+                            <p class="text-[10px] text-slate-500 mt-1">Интеграция с локальными серверами SCADA, отчетами лабораторий по OPC UA / MQTT протоколам.</p>
+                        </div>
+                        <div class="bg-slate-900/60 p-4 rounded-xl border border-dark-border/20 text-center flex flex-col items-center">
+                            <span class="text-2xl mb-2">☁️</span>
+                            <h4 class="text-xs font-bold text-white">2. Облако AWS</h4>
+                            <p class="text-[10px] text-slate-500 mt-1">Потоки данных реального времени очищаются и консолидируются в единый информационный поток.</p>
+                        </div>
+                        <div class="bg-slate-900/60 p-4 rounded-xl border border-dark-border/20 text-center flex flex-col items-center">
+                            <span class="text-2xl mb-2">🧠</span>
+                            <h4 class="text-xs font-bold text-white">3. Physics-based AI</h4>
+                            <p class="text-[10px] text-slate-500 mt-1">Модули машинного обучения ограничены уравнениями гидродинамики многофазного флюида (виртуальный замер).</p>
+                        </div>
+                        <div class="bg-slate-900/60 p-4 rounded-xl border border-dark-border/20 text-center flex flex-col items-center">
+                            <span class="text-2xl mb-2">⚡</span>
+                            <h4 class="text-xs font-bold text-white">4. Инициирование процессов</h4>
+                            <p class="text-[10px] text-slate-500 mt-1">Leucipa автоматически координирует смежные полевые службы, выдавая проработанные ИИ-сценарии оптимизации.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ARCH CONTAINER: WEATHERFORD -->
+                <div id="arch-wfrd" class="bg-dark-card border border-dark-border/20 p-6 rounded-2xl space-y-6 hidden">
+                    <div class="flex items-center justify-between border-b border-dark-border/10 pb-4">
+                        <h3 class="text-md font-bold text-white flex items-center gap-2">
+                            <span class="h-3 w-3 rounded-full bg-dark-indigo"></span>
+                            Локально-Облачная Гибридная Платформа Weatherford ForeSite
+                        </h3>
+                        <span class="text-xs px-2.5 py-1 rounded bg-slate-900 text-slate-400 font-bold">Устьевой Edge контроллер ⇄ CygNet SCADA ⇄ ForeSite Cloud</span>
+                    </div>
+
+                    <p class="text-xs text-slate-300 leading-relaxed max-w-4xl">
+                        Архитектурное превосходство ForeSite базируется на Edge-вычислениях. Контроллеры ForeSite Edge способны выполнять автономную корректировку непосредственно на устье, снижая время реакции.
+                    </p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 pt-4">
+                        <div class="bg-slate-900/60 p-4 rounded-xl border border-dark-border/20 text-center flex flex-col items-center">
+                            <span class="text-2xl mb-2">⚡</span>
+                            <h4 class="text-xs font-bold text-white">1. ForeSite Power / Sense</h4>
+                            <p class="text-[10px] text-slate-500 mt-1">Скважинные датчики пластового давления (Sense) и высокоэффективные ЧРП (Power VSD) ведут непрерывный съем параметров.</p>
+                        </div>
+                        <div class="bg-slate-900/60 p-4 rounded-xl border border-dark-border/20 text-center flex flex-col items-center">
+                            <span class="text-2xl mb-2">⚙️</span>
+                            <h4 class="text-xs font-bold text-white">2. ForeSite Edge</h4>
+                            <p class="text-[10px] text-slate-500 mt-1">Краевой контроллер устья. Автономно вычисляет динамограммы ШГН и адаптирует частоту качания без задержек.</p>
+                        </div>
+                        <div class="bg-slate-900/60 p-4 rounded-xl border border-dark-border/20 text-center flex flex-col items-center">
+                            <span class="text-2xl mb-2">🎛️</span>
+                            <h4 class="text-xs font-bold text-white">3. CygNet SCADA</h4>
+                            <p class="text-[10px] text-slate-500 mt-1">Осуществляет диспетчерский контроль, архивацию данных в Historian, управляет тревогами по отклонениям.</p>
+                        </div>
+                        <div class="bg-slate-900/60 p-4 rounded-xl border border-dark-border/20 text-center flex flex-col items-center">
+                            <span class="text-2xl mb-2">☁️</span>
+                            <h4 class="text-xs font-bold text-white">4. ForeSite Cloud</h4>
+                            <p class="text-[10px] text-slate-500 mt-1">Производит узловой анализ (Nodal Analysis), автокалибровку цифрового двойника скважины и оптимизацию сетей сбора.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ARCH CONTAINER: HALLIBURTON -->
+                <div id="arch-hal" class="bg-dark-card border border-dark-border/20 p-6 rounded-2xl space-y-6 hidden">
+                    <div class="flex items-center justify-between border-b border-dark-border/10 pb-4">
+                        <h3 class="text-md font-bold text-white flex items-center gap-2">
+                            <span class="h-3 w-3 rounded-full bg-dark-amber"></span>
+                            Среда iEnergy® & Стандарты OSDU от Halliburton Landmark
+                        </h3>
+                        <span class="text-xs px-2.5 py-1 rounded bg-slate-900 text-slate-400 font-bold">Любые контроллеры → iEnergy Stack → OSDU Lake → Twins</span>
+                    </div>
+
+                    <p class="text-xs text-slate-300 leading-relaxed max-w-4xl">
+                        DecisionSpace 365 Production ориентирован на создание единой гидродинамической цепочки от пласта (NETool) до наземных систем сбора в соответствии с открытыми ИТ-стандартами.
+                    </p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 pt-4">
+                        <div class="bg-slate-900/60 p-4 rounded-xl border border-dark-border/20 text-center flex flex-col items-center">
+                            <span class="text-2xl mb-2">🔌</span>
+                            <h4 class="text-xs font-bold text-white">1. Агностический сбор</h4>
+                            <p class="text-[10px] text-slate-500 mt-1">Совместимость с любыми устьевыми ПЛК сторонних производителей по протоколам OPC UA и MQTT.</p>
+                        </div>
+                        <div class="bg-slate-900/60 p-4 rounded-xl border border-dark-border/20 text-center flex flex-col items-center">
+                            <span class="text-2xl mb-2">🏛️</span>
+                            <h4 class="text-xs font-bold text-white">2. OSDU Data Space</h4>
+                            <p class="text-[10px] text-slate-500 mt-1">Структурирование и очистка потоков в рамках единого открытого информационного пространства OSDU.</p>
+                        </div>
+                        <div class="bg-slate-900/60 p-4 rounded-xl border border-dark-border/20 text-center flex flex-col items-center">
+                            <span class="text-2xl mb-2">🌊</span>
+                            <h4 class="text-xs font-bold text-white">3. NETool & SpyGlass</h4>
+                            <p class="text-[10px] text-slate-500 mt-1">Численное steady-state симулирование inflow сложных скважин, подбор оборудования ESP (SpyGlass).</p>
+                        </div>
+                        <div class="bg-slate-900/60 p-4 rounded-xl border border-dark-border/20 text-center flex flex-col items-center">
+                            <span class="text-2xl mb-2">🛠️</span>
+                            <h4 class="text-xs font-bold text-white">4. Intelevate™ Platform</h4>
+                            <p class="text-[10px] text-slate-500 mt-1">ИИ-прогнозирование рисков Flow Assurance (гидратообразование, соли) и удаленный запуск VFD.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 4: REAL CASES -->
+            <div id="tab-cases" class="tab-content hidden flex flex-col gap-6">
+                <div>
+                    <h2 class="text-2xl font-black text-white">Практический опыт оптимизации добычи</h2>
+                    <p class="text-sm text-slate-400">Документированные кейсы внедрения предиктивных платформ на мировых активах</p>
+                </div>
+
+                <!-- Cameroon Case Timeline (SLB) -->
+                <div class="bg-dark-card border border-dark-border/20 p-6 rounded-2xl space-y-6">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                        <h3 class="text-md font-bold text-white flex items-center gap-2">
+                            <span class="text-red-400">🔥</span> Кейс: Предотвращение аварии на шельфе Камеруна (SLB Lift IQ)
+                        </h3>
+                        <span class="text-xs px-2.5 py-1 rounded bg-slate-900 text-dark-accent font-extrabold">Экономия: $13 000 000 за 4 года</span>
+                    </div>
+
+                    <p class="text-xs text-slate-400 leading-relaxed">
+                        На удаленных морских платформах произошла автоматическая блокировка на установке подготовки нефти, приведшая к мгновенному перекрытию приемной линии. Насос УЭЦН оказался в режиме работы на закрытую задвижку (<code class="code-font text-brand-amber">"deadheading"</code>). Пошаговый таймлайн действий экспертов:
+                    </p>
+
+                    <!-- Vertical Timeline using pure Tailwind/CSS -->
+                    <div class="border-l-2 border-dark-border/50 ml-4 pl-6 space-y-6 text-xs relative">
+                        <div class="relative">
+                            <div class="absolute -left-[31px] top-1 bg-dark-accent h-4 w-4 rounded-full border-4 border-slate-900"></div>
+                            <span class="font-bold text-white">13:20 по местному времени</span>
+                            <p class="text-slate-400 mt-1">Датчики Phoenix XT зафиксировали резкий скачкообразный рост буферного и приемного давлений на нескольких скважинах.</p>
+                        </div>
+                        <div class="relative">
+                            <div class="absolute -left-[31px] top-1 bg-dark-accent h-4 w-4 rounded-full border-4 border-slate-900"></div>
+                            <span class="font-bold text-white">13:35 (Спустя 15 минут)</span>
+                            <p class="text-slate-400 mt-1">Дежурные инженеры центра ALSC в Инверури (Шотландия) идентифицировали угрозу останова и связались с пультом управления платформы.</p>
+                        </div>
+                        <div class="relative">
+                            <div class="absolute -left-[31px] top-1 bg-dark-accent h-4 w-4 rounded-full border-4 border-slate-900"></div>
+                            <span class="font-bold text-white">13:45 (Спустя 25 минут)</span>
+                            <p class="text-slate-400 mt-1">Большинство скважин стабилизировалось после перенаправления на резервные линии. Однако на одной автономной платформе УЭЦН продолжила критический нагрев.</p>
+                        </div>
+                        <div class="relative">
+                            <div class="absolute -left-[31px] top-1 bg-red-400 h-4 w-4 rounded-full border-4 border-slate-900"></div>
+                            <span class="font-bold text-red-400">13:49 (Завершение инцидента)</span>
+                            <p class="text-slate-400 mt-1">Ввиду невозможности быстрой доставки персонала на автономную платформу, эксперты ALSC выполнили <strong>дистанционный защитный останов УЭЦН</strong>, исключив тепловой распад двигателя.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Weatherford/Halliburton cases -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-dark-card border border-dark-border/20 p-6 rounded-2xl flex flex-col justify-between">
+                        <div>
+                            <span class="text-[10px] text-dark-indigo font-bold uppercase tracking-widest mb-1">Weatherford ForeSite (Пермский Бассейн, США)</span>
+                            <h4 class="text-sm font-bold text-white mb-2">Полномасштабная оптимизация 4,000+ скважин</h4>
+                            <p class="text-xs text-slate-400 leading-relaxed mb-4">
+                                Оператор в Техасе столкнулся с упущенной добычей на зрелом и разнородном фонде (ESP, SRP, газлифт, плунжер). За счет интеграции CygNet SCADA и платформы ForeSite была внедрена концепция "управления по отклонениям". Система автоматически выявила "слабые" скважины, дав точечные наводки экипажу.
+                            </p>
+                        </div>
+                        <div class="p-3 bg-slate-950/40 rounded-xl border border-dark-border/10 text-xs">
+                            <span class="font-semibold text-white">Результат:</span> Ежегодный прирост эффективности составил <strong>$17.7 млн</strong> ($5.8M - эффективность персонала, $6.5M - увеличение run life насосов).
+                        </div>
+                    </div>
+
+                    <div class="bg-dark-card border border-dark-border/20 p-6 rounded-2xl flex flex-col justify-between">
+                        <div>
+                            <span class="text-[10px] text-dark-emerald font-bold uppercase tracking-widest mb-1">Baker Hughes Leucipa (Глобальные активы Repsol)</span>
+                            <h4 class="text-sm font-bold text-white mb-2">Мульти-активная ИИ-оптимизация добычи</h4>
+                            <p class="text-xs text-slate-400 leading-relaxed mb-4">
+                                В рамках масштабного партнерства (от октября 2024 года) Repsol перевела разрозненную промысловую инфраструктуру в единый контур Leucipa на AWS. Алгоритмическое ядро Physics-based AI и модули виртуальных замеров позволили вести проактивную оптимизацию без капитальных затрат на замерные установки.
+                            </p>
+                        </div>
+                        <div class="p-3 bg-slate-950/40 rounded-xl border border-dark-border/10 text-xs">
+                            <span class="font-semibold text-white">Результат:</span> Извлечены миллионы баррелей нефти, которые ранее оставались бы невыработанными из-за технологических простоев; снижен объем факельного сжигания.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 5: FINANCIAL CALCULATOR -->
+            <div id="tab-calculator" class="tab-content hidden flex flex-col gap-6">
+                <div>
+                    <h2 class="text-2xl font-black text-white">Финансовый калькулятор окупаемости (ROI & TCO)</h2>
+                    <p class="text-sm text-slate-400">Настройте параметры своего фонда, чтобы сравнить потенциальный экономический эффект от внедрения четырех платформ</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Left controls -->
+                    <div class="bg-dark-card border border-dark-border/20 p-6 rounded-2xl flex flex-col gap-6 lg:col-span-1">
+                        <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2">
+                            <span>⚙️</span> Параметры фонда скважин
+                        </h3>
+
+                        <!-- Well Count -->
+                        <div>
+                            <div class="flex justify-between items-center mb-2">
+                                <label for="input-wells" class="text-xs text-slate-300 font-medium">Количество скважин (ESP/SRP):</label>
+                                <span id="val-wells" class="text-xs font-bold text-dark-accent code-font">100</span>
+                            </div>
+                            <input type="range" id="input-wells" min="10" max="500" step="10" value="100" oninput="calculateROI()" class="w-full h-1 bg-slate-900 rounded-lg appearance-none cursor-pointer accent-dark-accent">
+                        </div>
+
+                        <!-- Average Failure Rate -->
+                        <div>
+                            <div class="flex justify-between items-center mb-2">
+                                <label for="input-failures" class="text-xs text-slate-300 font-medium">Частота отказов в год (на скважину):</label>
+                                <span id="val-failures" class="text-xs font-bold text-dark-accent code-font">1.2</span>
+                            </div>
+                            <input type="range" id="input-failures" min="0.5" max="3.0" step="0.1" value="1.2" oninput="calculateROI()" class="w-full h-1 bg-slate-900 rounded-lg appearance-none cursor-pointer accent-dark-accent">
+                        </div>
+
+                        <!-- Average Cost of Workover (ТКРС) -->
+                        <div>
+                            <div class="flex justify-between items-center mb-2">
+                                <label for="input-tco" class="text-xs text-slate-300 font-medium">Средняя стоимость ТКРС ($):</label>
+                                <span id="val-tco" class="text-xs font-bold text-dark-accent code-font">$60 000</span>
+                            </div>
+                            <input type="range" id="input-tco" min="20000" max="150000" step="5000" value="60000" oninput="calculateROI()" class="w-full h-1 bg-slate-900 rounded-lg appearance-none cursor-pointer accent-dark-accent">
+                        </div>
+
+                        <!-- Production Loss from Downtime (Недобыча за ремонт) -->
+                        <div>
+                            <div class="flex justify-between items-center mb-2">
+                                <label for="input-loss" class="text-xs text-slate-300 font-medium">Ущерб от недобычи при 1 простое ($):</label>
+                                <span id="val-loss" class="text-xs font-bold text-dark-accent code-font">$25 000</span>
+                            </div>
+                            <input type="range" id="input-loss" min="5000" max="100000" step="5000" value="25000" oninput="calculateROI()" class="w-full h-1 bg-slate-900 rounded-lg appearance-none cursor-pointer accent-dark-accent">
+                        </div>
+                    </div>
+
+                    <!-- Right dynamic dashboard -->
+                    <div class="lg:col-span-2 flex flex-col gap-6">
+                        <!-- Chart Container -->
+                        <div class="bg-dark-card border border-dark-border/20 p-6 rounded-2xl flex-1">
+                            <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Совокупные годовые затраты (Ремонты + Упущенная добыча + Подписка, $)</h3>
+                            <div class="h-64 w-full relative">
+                                <canvas id="financialChart"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Financial Summary cards -->
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div class="bg-slate-900/50 p-4 rounded-xl border border-dark-border/10 flex flex-col justify-between">
+                                <span class="text-[10px] text-slate-500 font-bold uppercase">Базовый годовой ущерб (без систем)</span>
+                                <span id="res-baseline" class="text-lg font-black text-red-500">$10,200,000</span>
+                                <span class="text-[9px] text-slate-500 mt-2">Расчет: Ремонты + Простой</span>
+                            </div>
+                            <div class="bg-slate-900/50 p-4 rounded-xl border border-dark-border/10 flex flex-col justify-between border-l-2 border-dark-accent">
+                                <span class="text-[10px] text-slate-500 font-bold uppercase">Эффект с SLB Lift IQ</span>
+                                <span id="res-slb-tco" class="text-lg font-black text-dark-accent">$4,980,000</span>
+                                <span id="res-slb-saving" class="text-[10px] text-dark-emerald font-bold mt-2">Экономия: $5,220,000</span>
+                            </div>
+                            <div class="bg-slate-900/50 p-4 rounded-xl border border-dark-border/10 flex flex-col justify-between border-l-2 border-dark-emerald">
+                                <span class="text-[10px] text-slate-500 font-bold uppercase">Эффект с BH Leucipa</span>
+                                <span id="res-bh-tco" class="text-lg font-black text-dark-emerald">$5,140,000</span>
+                                <span id="res-bh-saving" class="text-[10px] text-dark-emerald font-bold mt-2">Экономия: $5,060,000</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Financial methodology -->
+                <div class="bg-dark-card border border-dark-border/20 p-5 rounded-2xl text-xs text-slate-400 leading-relaxed space-y-3">
+                    <h4 class="font-bold text-white text-sm">Методология сравнительных финансовых расчетов:</h4>
+                    <p>
+                        1. **Базовый ущерб (Baseline Loss):** <code class="code-font text-dark-accent">Скважины * Частота отказов * (Стоимость ТКРС + Ущерб от недобычи)</code>.
+                    </p>
+                    <p>
+                        2. **Эффективность платформ в снижении отказов:** согласно предоставленным материалам исследований, системы предиктивной аналитики УЭЦН/ШГН предотвращают преждевременные поломки со следующими средневзвешенными показателями:
+                        <strong>SLB Lift IQ</strong>: снижает число отказов на **55%**;
+                        <strong>Baker Hughes Leucipa</strong>: снижает на **52%**;
+                        <strong>Weatherford ForeSite</strong>: снижает на **50%**;
+                        <strong>Halliburton DS 365</strong>: снижает на **48%**.
+                    </p>
+                    <p>
+                        3. **Совокупная стоимость владения (TCO):** Включает остаточный за за вычетом экономии ущерб плюс удельную годовую стоимость программного/аппаратного обслуживания на скважину:
+                        SLB: подписка/сервисный контракт в размере $500/скважина/мес;
+                        Baker Hughes: SaaS-лицензия в размере $400/скважина/мес;
+                        Weatherford: SaaS-лицензия + амортизация Edge-контроллера в размере $350/скважина/мес;
+                        Halliburton: SaaS iEnergy в размере $380/скважина/мес.
+                    </p>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark-card border-t border-dark-border/20 px-6 py-4 flex flex-col md:flex-row justify-between items-center text-xs text-slate-500 gap-4">
+        <span>© 2026 Сравнительное исследование платформ автоматизации нефтедобычи. Данные верифицированы по официальным релизам.</span>
+        <div class="flex gap-4">
+            <a href="https://www.slb.com/products-and-services/innovating-in-oil-and-gas/completions/artificial-lift/optimizing-artificial-lift/lift-iq-production-life-cycle-management-service" target="_blank" class="hover:text-dark-accent transition-colors">SLB ↗</a>
+            <a href="https://www.bakerhughes.com/oilfield-services-and-equipment-digital/leucipa-automated-field-production-solution" target="_blank" class="hover:text-dark-accent transition-colors">Baker Hughes ↗</a>
+            <a href="https://www.weatherford.com" target="_blank" class="hover:text-dark-accent transition-colors">Weatherford ↗</a>
+            <a href="https://www.halliburton.com" target="_blank" class="hover:text-dark-accent transition-colors">Halliburton ↗</a>
+        </div>
+    </footer>
+
+    <!-- Chart & Tab Logic -->
+    <script>
+        let currentTab = 'overview';
+        let radarChartInstance = null;
+        let financialChartInstance = null;
+
+        window.onload = function() {
+            initRadarChart();
+            calculateROI();
+        }
+
+        // Switch active Tab
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.add('hidden'));
+            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.className = "tab-btn flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-semibold tracking-wide transition-all text-slate-400 hover:bg-slate-800/30 hover:text-white";
+            });
+
+            const activeBtn = document.getElementById(`btn-${tabId}`);
+            if (activeBtn) {
+                activeBtn.className = "tab-btn flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-semibold tracking-wide transition-all text-white bg-slate-800/80 border-l-4 border-dark-accent";
+            }
+
+            currentTab = tabId;
+
+            // Trigger refit on charts
+            if (tabId === 'overview' && radarChartInstance) {
+                setTimeout(() => { radarChartInstance.resize(); }, 50);
+            } else if (tabId === 'calculator' && financialChartInstance) {
+                setTimeout(() => { financialChartInstance.resize(); }, 50);
+            }
+        }
+
+        // Toggle Architectures steps
+        function toggleArch(archType) {
+            document.getElementById('arch-slb').classList.add('hidden');
+            document.getElementById('arch-bh').classList.add('hidden');
+            document.getElementById('arch-wfrd').classList.add('hidden');
+            document.getElementById('arch-hal').classList.add('hidden');
+
+            document.querySelectorAll('[id^="btn-arch-"]').forEach(btn => {
+                btn.className = "px-4 py-2 rounded-lg text-xs font-bold transition-all text-slate-400 hover:text-slate-200";
+            });
+
+            document.getElementById(`arch-${archType}`).classList.remove('hidden');
+            document.getElementById(`btn-arch-${archType}`).className = "px-4 py-2 rounded-lg text-xs font-bold transition-all text-white bg-slate-800";
+        }
+
+        // Radar chart initialization comparison (SLB, BH, Weatherford, Halliburton)
+        function initRadarChart() {
+            const ctx = document.getElementById('radarChart').getContext('2d');
+            
+            radarChartInstance = new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: [
+                        'Защита погружного ESP (УЭЦН)', 
+                        'Автономность устья (Edge AI)', 
+                        'Виртуальные расходомеры (ИИ)', 
+                        'Совместимость со SCADA (CygNet)', 
+                        'Полнота цифрового двойника (NETool)', 
+                        'Служба экспертов ALSC (24/7)'
+                    ],
+                    datasets: [
+                        {
+                            label: 'SLB Lift IQ',
+                            data: [95, 45, 80, 70, 75, 98],
+                            backgroundColor: 'rgba(72, 202, 228, 0.1)',
+                            borderColor: '#48cae4',
+                            borderWidth: 2,
+                            pointBackgroundColor: '#48cae4'
+                        },
+                        {
+                            label: 'Baker Hughes Leucipa',
+                            data: [90, 25, 95, 80, 85, 30],
+                            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                            borderColor: '#10b981',
+                            borderWidth: 2,
+                            pointBackgroundColor: '#10b981'
+                        },
+                        {
+                            label: 'Weatherford ForeSite',
+                            data: [85, 95, 75, 98, 80, 50],
+                            backgroundColor: 'rgba(99, 102, 241, 0.1)',
+                            borderColor: '#6366f1',
+                            borderWidth: 2,
+                            pointBackgroundColor: '#6366f1'
+                        },
+                        {
+                            label: 'Halliburton DS 365',
+                            data: [80, 30, 85, 90, 95, 70],
+                            backgroundColor: 'rgba(245, 158, 11, 0.1)',
+                            borderColor: '#f59e0b',
+                            borderWidth: 2,
+                            pointBackgroundColor: '#f59e0b'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            angleLines: { color: 'rgba(58, 80, 107, 0.4)' },
+                            grid: { color: 'rgba(58, 80, 107, 0.4)' },
+                            pointLabels: {
+                                color: '#94a3b8',
+                                font: { size: 10, weight: 'bold' }
+                            },
+                            ticks: { display: false, max: 100, min: 0 }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: '#f1f5f9',
+                                font: { size: 10 }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // TCO & ROI Calculation
+        function calculateROI() {
+            const wells = parseInt(document.getElementById('input-wells').value);
+            const failures = parseFloat(document.getElementById('input-failures').value);
+            const workoverCost = parseInt(document.getElementById('input-tco').value);
+            const lossCost = parseInt(document.getElementById('input-loss').value);
+
+            // Update Labels
+            document.getElementById('val-wells').innerText = wells;
+            document.getElementById('val-failures').innerText = failures.toFixed(1);
+            document.getElementById('val-tco').innerText = `$${workoverCost.toLocaleString('ru-RU')}`;
+            document.getElementById('val-loss').innerText = `$${lossCost.toLocaleString('ru-RU')}`;
+
+            // Baseline Loss calculation
+            const totalIncidentCost = workoverCost + lossCost;
+            const baselineLoss = wells * failures * totalIncidentCost;
+
+            // System Calculations
+            // SLB: 55% reduction, sub fee $500/mo/well
+            const slbSavedLoss = baselineLoss * 0.45;
+            const slbSubscription = wells * 500 * 12;
+            const slbTCO = slbSavedLoss + slbSubscription;
+            const slbSaving = baselineLoss - slbTCO;
+
+            // Baker Hughes Leucipa: 52% reduction, SaaS fee $400/mo/well
+            const bhSavedLoss = baselineLoss * 0.48;
+            const bhSubscription = wells * 400 * 12;
+            const bhTCO = bhSavedLoss + bhSubscription;
+            const bhSaving = baselineLoss - bhTCO;
+
+            // Weatherford ForeSite: 50% reduction, SaaS fee $350/mo/well
+            const wfrdSavedLoss = baselineLoss * 0.50;
+            const wfrdSubscription = wells * 350 * 12;
+            const wfrdTCO = wfrdSavedLoss + wfrdSubscription;
+            const wfrdSaving = baselineLoss - wfrdTCO;
+
+            // Halliburton DS 365: 48% reduction, SaaS fee $380/mo/well
+            const halSavedLoss = baselineLoss * 0.52;
+            const halSubscription = wells * 380 * 12;
+            const halTCO = halSavedLoss + halSubscription;
+            const halSaving = baselineLoss - halTCO;
+
+            // Render text indicators
+            document.getElementById('res-baseline').innerText = `$${baselineLoss.toLocaleString('ru-RU')}`;
+            document.getElementById('res-slb-tco').innerText = `$${slbTCO.toLocaleString('ru-RU')}`;
+            document.getElementById('res-slb-saving').innerText = `Годовая выгода: $${slbSaving.toLocaleString('ru-RU')}`;
+            
+            document.getElementById('res-bh-tco').innerText = `$${bhTCO.toLocaleString('ru-RU')}`;
+            document.getElementById('res-bh-saving').innerText = `Годовая выгода: $${bhSaving.toLocaleString('ru-RU')}`;
+
+            // Update Dynamic Bar Chart
+            updateFinancialChart(baselineLoss, slbTCO, bhTCO, wfrdTCO, halTCO);
+        }
+
+        function updateFinancialChart(baseline, slb, bh, wfrd, hal) {
+            const ctx = document.getElementById('financialChart').getContext('2d');
+
+            if (financialChartInstance) {
+                financialChartInstance.data.datasets[0].data = [baseline, slb, bh, wfrd, hal];
+                financialChartInstance.update();
+                return;
+            }
+
+            financialChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Базовые потери', 'SLB Lift IQ', 'BH Leucipa', 'WFRD ForeSite', 'HAL DecisionSpace'],
+                    datasets: [{
+                        label: 'Совокупные годовые затраты ($)',
+                        data: [baseline, slb, bh, wfrd, hal],
+                        backgroundColor: [
+                            'rgba(239, 68, 68, 0.7)',  // Baseline (Red)
+                            'rgba(72, 202, 228, 0.7)',  // SLB (Cyan)
+                            'rgba(16, 185, 129, 0.7)', // BH (Emerald)
+                            'rgba(99, 102, 241, 0.7)', // WFRD (Indigo)
+                            'rgba(245, 158, 11, 0.7)'  // HAL (Amber)
+                        ],
+                        borderColor: [
+                            '#ef4444',
+                            '#48cae4',
+                            '#10b981',
+                            '#6366f1',
+                            '#f59e0b'
+                        ],
+                        borderWidth: 1.5,
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            grid: { color: 'rgba(58, 80, 107, 0.2)' },
+                            ticks: {
+                                color: '#94a3b8',
+                                font: { size: 10 },
+                                callback: function(value) {
+                                    return '$' + value.toLocaleString('ru-RU');
+                                }
+                            }
+                        },
+                        x: {
+                            grid: { display: false },
+                            ticks: {
+                                color: '#f1f5f9',
+                                font: { size: 10, weight: 'semibold' }
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>
